@@ -4,11 +4,9 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
-class MediaDatabase {
+private const val MEDIA_COLLECTION = "media"
 
-    companion object {
-        private const val MEDIA_COLLECTION = "media"
-    }
+class MediaDatabase {
 
     private val db = Firebase.firestore
 
