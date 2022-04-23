@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.andresestevez.kirabi.exoplayer.callbacks.AudioPlayerNotificationListener
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.upstream.DefaultDataSource
@@ -22,12 +23,15 @@ class AudioService @Inject constructor(
     coroutineDispatcher: CoroutineDispatcher,
 ) : MediaBrowserServiceCompat() {
 
+    private lateinit var audioNotificationManager: AudioNotificationManager
+
     private val serviceJob = Job()
     private val audioServiceScope = CoroutineScope(coroutineDispatcher + serviceJob)
 
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaSessionConnector: MediaSessionConnector
 
+    var isForegroundService = false
 
     override fun onCreate() {
         super.onCreate()
@@ -42,9 +46,16 @@ class AudioService @Inject constructor(
 
         sessionToken = mediaSession.sessionToken
 
+        audioNotificationManager = AudioNotificationManager(
+            this,
+            mediaSession,
+            AudioPlayerNotificationListener(this),
+            ) { }
+
         mediaSessionConnector = MediaSessionConnector(mediaSession).apply {
             setPlayer(exoPlayer)
         }
+
     }
 
     override fun onDestroy() {

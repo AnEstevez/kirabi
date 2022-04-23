@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Kirabi</string>
+    <string name="audio_notification_channel_name">Audio Channel</string>
+    <string name="audio_notification_channel_description">Shows current playing audio</string>
 </resources>

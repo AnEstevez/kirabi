@@ -61,8 +61,6 @@ class FirebaseAudioSource @Inject constructor(
         return MediaBrowserCompat.MediaItem(mediaDescription, FLAG_PLAYABLE)
     }
 
-
-
     private fun whenReady(action: (Boolean) -> Unit): Boolean =
         if (state == STATE_CREATED || state == STATE_INITIALIZING) {
             onReadyListeners += action
