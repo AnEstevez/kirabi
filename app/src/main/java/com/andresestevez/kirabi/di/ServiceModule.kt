@@ -1,6 +1,7 @@
 package com.andresestevez.kirabi.di
 
 import android.app.Application
+import com.andresestevez.kirabi.data.server.MediaDatabase
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
@@ -40,4 +41,8 @@ object ServiceModule {
     @ServiceScoped
     @Provides
     fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @ServiceScoped
+    @Provides
+    fun provideMediaDatabase(): MediaDatabase = MediaDatabase()
 }
