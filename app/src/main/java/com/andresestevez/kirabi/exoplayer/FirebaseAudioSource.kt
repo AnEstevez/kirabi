@@ -54,19 +54,15 @@ class FirebaseAudioSource @Inject constructor(
         return concatenatingMediaSource
     }
 
-    fun MediaMetadataCompat.toMediaItem(): MediaBrowserCompat.MediaItem {
-        val mediaDescription = MediaDescriptionCompat.Builder()
-            .setMediaUri(getString(METADATA_KEY_MEDIA_URI).toUri())
-            .build()
-        return MediaBrowserCompat.MediaItem(mediaDescription, FLAG_PLAYABLE)
-    }
+    fun asMediaItems(): MutableList<MediaBrowserCompat.MediaItem> =
+        medias.map { it.toMediaItem() }.toMutableList()
 
-    private fun whenReady(action: (Boolean) -> Unit): Boolean =
+    fun whenReady(action: (Boolean) -> Unit): Boolean =
         if (state == STATE_CREATED || state == STATE_INITIALIZING) {
             onReadyListeners += action
             false
         } else {
-            action(state == STATE_INITIALIZING)
+            action(state == STATE_INITIALIZED)
             true
         }
 

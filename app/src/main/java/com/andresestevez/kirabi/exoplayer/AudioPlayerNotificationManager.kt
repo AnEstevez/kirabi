@@ -15,7 +15,7 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager
 private const val NOTIFICATION_CHANNEL_ID = "audio"
 private const val NOTIFICATION_ID = 1
 
-class AudioNotificationManager(
+class AudioPlayerNotificationManager(
     private val context: Context,
     mediaSession: MediaSessionCompat,
     notificationListener: PlayerNotificationManager.NotificationListener,
