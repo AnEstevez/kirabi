@@ -8,6 +8,9 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.andresestevez.kirabi.data.common.Constants.MEDIA_ROOT_ID
+import com.andresestevez.kirabi.data.common.Constants.NETWORK_ERROR
+import com.andresestevez.kirabi.data.common.Constants.SERVICE_TAG
 import com.andresestevez.kirabi.exoplayer.callbacks.AudioPlaybackPreparer
 import com.andresestevez.kirabi.exoplayer.callbacks.AudioPlayerEventListener
 import com.andresestevez.kirabi.exoplayer.callbacks.AudioPlayerNotificationListener
@@ -19,9 +22,6 @@ import com.google.android.exoplayer2.upstream.DefaultDataSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import javax.inject.Inject
-
-private const val SERVICE_TAG = "AudioService"
-private const val MEDIA_ROOT_ID = "root_id"
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -149,6 +149,7 @@ class AudioService @Inject constructor(
                             isPlayerInitialized = true
                         }
                     } else {
+                        mediaSession.sendSessionEvent(NETWORK_ERROR, null)
                         result.sendResult(null)
                     }
                 }

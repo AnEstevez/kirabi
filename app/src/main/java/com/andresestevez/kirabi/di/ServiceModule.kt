@@ -1,6 +1,6 @@
 package com.andresestevez.kirabi.di
 
-import android.app.Application
+import android.content.Context
 import com.andresestevez.kirabi.data.server.MediaDatabase
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
@@ -10,6 +10,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ServiceComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ServiceScoped
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -27,16 +28,19 @@ object ServiceModule {
 
     @ServiceScoped
     @Provides
-    fun provideExoPlayer(application: Application, audioAttributes: AudioAttributes): ExoPlayer =
-        ExoPlayer.Builder(application).build().apply {
+    fun provideExoPlayer(
+        @ApplicationContext context: Context,
+        audioAttributes: AudioAttributes,
+    ): ExoPlayer =
+        ExoPlayer.Builder(context).build().apply {
             setAudioAttributes(audioAttributes, true)
             setHandleAudioBecomingNoisy(true)
         }
 
     @ServiceScoped
     @Provides
-    fun provideDefaultDataSourceFactory(application: Application): DefaultDataSource.Factory =
-        DefaultDataSource.Factory(application)
+    fun provideDefaultDataSourceFactory(@ApplicationContext context: Context): DefaultDataSource.Factory =
+        DefaultDataSource.Factory(context)
 
     @ServiceScoped
     @Provides
@@ -45,4 +49,6 @@ object ServiceModule {
     @ServiceScoped
     @Provides
     fun provideMediaDatabase(): MediaDatabase = MediaDatabase()
+
+
 }

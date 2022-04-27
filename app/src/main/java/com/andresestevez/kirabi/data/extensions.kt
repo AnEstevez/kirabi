@@ -1,6 +1,8 @@
 package com.andresestevez.kirabi.data
 
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
+import com.andresestevez.kirabi.data.models.Media
 import com.andresestevez.kirabi.data.server.MediaDto
 
 fun MediaDto.toMediaMetadataCompat(): MediaMetadataCompat = MediaMetadataCompat.Builder()
@@ -14,3 +16,13 @@ fun MediaDto.toMediaMetadataCompat(): MediaMetadataCompat = MediaMetadataCompat.
     .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, imageUrl)
     .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, url)
     .build()
+
+fun MediaDto.toMedia(): Media = Media(id, title, artist, url, imageUrl)
+
+fun MediaBrowserCompat.MediaItem.toMedia(): Media = Media(
+    mediaId ?: "",
+    description.title.toString(),
+    description.subtitle.toString(),
+    description.mediaUri.toString(),
+    description.iconUri.toString(),
+)
