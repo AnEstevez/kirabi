@@ -1,6 +1,7 @@
 package com.andresestevez.kirabi.exoplayer
 
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -14,6 +15,7 @@ import com.andresestevez.kirabi.data.common.Constants.SERVICE_TAG
 import com.andresestevez.kirabi.exoplayer.callbacks.AudioPlaybackPreparer
 import com.andresestevez.kirabi.exoplayer.callbacks.AudioPlayerEventListener
 import com.andresestevez.kirabi.exoplayer.callbacks.AudioPlayerNotificationListener
+import com.bumptech.glide.RequestManager
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -25,17 +27,24 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class AudioService @Inject constructor(
-    private val dataSourceFactory: DefaultDataSource.Factory,
-    private val exoPlayer: ExoPlayer,
-    coroutineDispatcher: CoroutineDispatcher,
-    private val firebaseAudioSource: FirebaseAudioSource,
-) : MediaBrowserServiceCompat() {
+class AudioService : MediaBrowserServiceCompat() {
+
+    @Inject
+    lateinit var  dataSourceFactory: DefaultDataSource.Factory
+
+    @Inject
+    lateinit var exoPlayer: ExoPlayer
+
+    @Inject
+    lateinit var firebaseAudioSource: FirebaseAudioSource
+
+    @Inject
+    lateinit var glide: RequestManager
 
     private lateinit var audioPlayerNotificationManager: AudioPlayerNotificationManager
 
     private val serviceJob = Job()
-    private val audioServiceScope = CoroutineScope(coroutineDispatcher + serviceJob)
+    private val audioServiceScope = CoroutineScope(Dispatchers.Main + serviceJob)
 
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaSessionConnector: MediaSessionConnector
@@ -61,7 +70,7 @@ class AudioService @Inject constructor(
         }
 
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
-            PendingIntent.getActivity(this, 0, it, 0)
+            PendingIntent.getActivity(this, 0, it, FLAG_IMMUTABLE )
         }
 
         mediaSession = MediaSessionCompat(this, SERVICE_TAG).apply {
@@ -75,6 +84,7 @@ class AudioService @Inject constructor(
             this,
             mediaSession,
             AudioPlayerNotificationListener(this),
+            glide
         ) {
             curMediaDuration = exoPlayer.duration
         }
@@ -106,8 +116,8 @@ class AudioService @Inject constructor(
         playNow: Boolean,
     ) {
         val curSongIndex = if (curPlayingAudio == null) 0 else medias.indexOf(itemToPlay)
-        //TODO replace with setMediaSource + prepare
-        exoPlayer.prepare(firebaseAudioSource.asMediaSource(dataSourceFactory))
+        exoPlayer.setMediaSource(firebaseAudioSource.asMediaSource(dataSourceFactory))
+        exoPlayer.prepare()
         exoPlayer.seekTo(curSongIndex, 0L)
         exoPlayer.playWhenReady = playNow
     }

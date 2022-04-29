@@ -11,20 +11,12 @@ class AudioPlayerEventListener(
     private val audioService: AudioService,
 ) : Player.Listener {
 
-    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-        super.onPlayerStateChanged(playWhenReady, playbackState)
-        if(playbackState == Player.STATE_READY && !playWhenReady) {
+    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+        super.onPlayWhenReadyChanged(playWhenReady, reason)
+        if (!playWhenReady) {
             audioService.stopForeground(false)
         }
     }
-
-    // TODO probar este
-//    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-//        super.onPlayWhenReadyChanged(playWhenReady, reason)
-//        if (!playWhenReady) {
-//            audioService.stopForeground(false)
-//        }
-//    }
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)

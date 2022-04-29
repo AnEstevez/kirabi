@@ -1,8 +1,6 @@
 package com.andresestevez.kirabi.exoplayer
 
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_URI
 import androidx.core.net.toUri
@@ -12,10 +10,8 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSource
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-@AndroidEntryPoint
 class FirebaseAudioSource @Inject constructor(
     private val mediaDatabase: MediaDatabase,
 ) {

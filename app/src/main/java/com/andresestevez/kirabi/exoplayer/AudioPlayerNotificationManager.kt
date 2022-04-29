@@ -7,18 +7,21 @@ import android.graphics.drawable.Drawable
 import android.support.v4.media.session.MediaSessionCompat
 import com.andresestevez.kirabi.R
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
+import javax.inject.Inject
 
 private const val NOTIFICATION_CHANNEL_ID = "audio"
 private const val NOTIFICATION_ID = 1
 
-class AudioPlayerNotificationManager(
+class AudioPlayerNotificationManager (
     private val context: Context,
     mediaSession: MediaSessionCompat,
     notificationListener: PlayerNotificationManager.NotificationListener,
+    private val glide: RequestManager,
     private val newAudioCallback: () -> Unit,
 ) {
 
@@ -37,6 +40,8 @@ class AudioPlayerNotificationManager(
         notificationManager.apply {
             setMediaSessionToken(mediaSession.sessionToken)
             setSmallIcon(R.drawable.ic_audiotrack)
+            setUsePreviousAction(true)
+            setUseNextAction(true)
         }
     }
 
@@ -44,27 +49,26 @@ class AudioPlayerNotificationManager(
         notificationManager.setPlayer(player)
     }
 
-
-
     private inner class DescriptionAdapter(private val mediaSession: MediaSessionCompat) :
         PlayerNotificationManager.MediaDescriptionAdapter {
         override fun getCurrentContentTitle(player: Player): CharSequence =
             mediaSession.controller.metadata.description.title.toString()
 
+        override fun getCurrentContentText(player: Player): CharSequence? =
+            mediaSession.controller.metadata.description.subtitle
+
+        override fun getCurrentSubText(player: Player): CharSequence? =
+            mediaSession.controller.metadata.description.description
 
         override fun createCurrentContentIntent(player: Player): PendingIntent? =
             mediaSession.controller.sessionActivity
-
-
-        override fun getCurrentContentText(player: Player): CharSequence? =
-            mediaSession.controller.metadata.description.subtitle.toString()
 
         override fun getCurrentLargeIcon(
             player: Player,
             callback: PlayerNotificationManager.BitmapCallback,
         ): Bitmap? {
-            Glide.with(context)
-                .asBitmap()
+
+            glide.asBitmap()
                 .load(mediaSession.controller.metadata.description.iconUri)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(
@@ -77,6 +81,21 @@ class AudioPlayerNotificationManager(
                     override fun onLoadCleared(placeholder: Drawable?) = Unit
 
                 })
+
+//            Glide.with(context)
+//                .asBitmap()
+//                .load(mediaSession.controller.metadata.description.iconUri)
+//                .into(object : CustomTarget<Bitmap>() {
+//                    override fun onResourceReady(
+//                        resource: Bitmap,
+//                        transition: Transition<in Bitmap>?,
+//                    ) {
+//                        callback.onBitmap(resource)
+//                    }
+//
+//                    override fun onLoadCleared(placeholder: Drawable?) = Unit
+//
+//                })
             return null
         }
 
