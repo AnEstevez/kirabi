@@ -3,6 +3,7 @@ package com.andresestevez.kirabi.di
 import android.content.Context
 import com.andresestevez.kirabi.R
 import com.andresestevez.kirabi.exoplayer.AudioServiceConnection
+import com.andresestevez.kirabi.presentation.adapters.SwipeMediaAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -48,6 +49,10 @@ class AppModule {
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
         )
     }
+
+    @Singleton
+    @Provides
+    fun provideSwipeMediaAdapter() : SwipeMediaAdapter = SwipeMediaAdapter()
 }
 
 

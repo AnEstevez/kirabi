@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.andresestevez.kirabi.R
 import com.andresestevez.kirabi.data.Status
 import com.andresestevez.kirabi.databinding.FragmentHomeBinding
@@ -31,9 +31,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container,false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -48,6 +48,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             vm.playOrToggleMedia(it)
         }
         binding.rvAllMedia.adapter = mediaAdapter
+        (binding.rvAllMedia.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
     private fun subscribeToObservers() {
