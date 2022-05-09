@@ -6,6 +6,13 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.andresestevez.kirabi.presentation.HomeFragment"
+        android:name="com.andresestevez.kirabi.presentation.fragments.HomeFragment"
         android:label="HomeFragment" />
+    <fragment
+        android:id="@+id/mediaFragment"
+        android:name="com.andresestevez.kirabi.presentation.fragments.MediaFragment"
+        android:label="MediaFragment" />
+
+    <action android:id="@+id/globalActionToMediaFragment"
+        app:destination="@id/mediaFragment" />
 </navigation>

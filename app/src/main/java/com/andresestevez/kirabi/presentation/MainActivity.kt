@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.navigation.fragment.NavHostFragment
 import androidx.viewpager2.widget.ViewPager2
 import com.andresestevez.kirabi.R
 import com.andresestevez.kirabi.data.Status
@@ -64,6 +66,33 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.mediaFragment -> hideBottomBar()
+                R.id.homeFragment -> showBottomBar()
+                else -> showBottomBar()
+            }
+        }
+
+        adapter.setOnItemClickListener {
+            navController.navigate(R.id.globalActionToMediaFragment)
+        }
+    }
+
+    private fun hideBottomBar() {
+        binding.ivCurSongImage.isVisible = false
+        binding.ivPlayPause.isVisible = false
+        binding.vpSong.isVisible = false
+    }
+
+    private fun showBottomBar() {
+        binding.ivCurSongImage.isVisible = true
+        binding.ivPlayPause.isVisible = true
+        binding.vpSong.isVisible = true
     }
 
     private fun switchViewPagerToCurrentMedia(media: Media) {

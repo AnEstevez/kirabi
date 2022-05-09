@@ -1,4 +1,4 @@
-package com.andresestevez.kirabi.presentation
+package com.andresestevez.kirabi.presentation.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
