@@ -11,7 +11,11 @@
     <fragment
         android:id="@+id/mediaFragment"
         android:name="com.andresestevez.kirabi.presentation.fragments.MediaFragment"
-        android:label="MediaFragment" />
+        android:label="MediaFragment" >
+        <argument
+            android:name="mediaId"
+            app:argType="string" />
+    </fragment>
 
     <action android:id="@+id/globalActionToMediaFragment"
         app:destination="@id/mediaFragment" />

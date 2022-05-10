@@ -14,6 +14,7 @@ import com.andresestevez.kirabi.databinding.ActivityMainBinding
 import com.andresestevez.kirabi.exoplayer.isPlaying
 import com.andresestevez.kirabi.exoplayer.toMedia
 import com.andresestevez.kirabi.presentation.adapters.SwipeMediaAdapter
+import com.andresestevez.kirabi.presentation.fragments.MediaFragmentDirections
 import com.andresestevez.kirabi.presentation.viewmodels.MainViewModel
 import com.bumptech.glide.RequestManager
 import com.google.android.material.snackbar.Snackbar
@@ -79,7 +80,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         adapter.setOnItemClickListener {
-            navController.navigate(R.id.globalActionToMediaFragment)
+            if (playbackState?.isPlaying == false) {
+                vm.prepareFromMedia(it)
+            }
+            val direction = MediaFragmentDirections.globalActionToMediaFragment(it.id)
+            navController.navigate(direction)
         }
     }
 
@@ -123,7 +128,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        vm.curlPlayingMedia.observe(this) {
+        vm.curPlayingMedia.observe(this) {
             if (it == null) return@observe
             curPlayingMedia = it.toMedia()
             glide.load(curPlayingMedia?.imageUrl).into(binding.ivCurSongImage)

@@ -47,8 +47,10 @@ class AudioPlayerNotificationManager(
 
     private inner class DescriptionAdapter(private val mediaSession: MediaSessionCompat) :
         PlayerNotificationManager.MediaDescriptionAdapter {
-        override fun getCurrentContentTitle(player: Player): CharSequence =
-            mediaSession.controller.metadata.description.title.toString()
+        override fun getCurrentContentTitle(player: Player): CharSequence {
+            newAudioCallback()
+            return mediaSession.controller.metadata.description.title.toString()
+        }
 
         override fun getCurrentContentText(player: Player): CharSequence? =
             mediaSession.controller.metadata.description.subtitle

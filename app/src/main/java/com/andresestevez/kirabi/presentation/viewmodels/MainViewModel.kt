@@ -26,7 +26,7 @@ class MainViewModel @Inject constructor(
 
     val isConnected = audioServiceConnection.isConnected
     val networkError = audioServiceConnection.networkError
-    val curlPlayingMedia = audioServiceConnection.curPlayingMedia
+    val curPlayingMedia = audioServiceConnection.curPlayingMedia
     val playbackState = audioServiceConnection.playbackState
 
     init {
@@ -59,7 +59,7 @@ class MainViewModel @Inject constructor(
 
     fun playOrToggleMedia(mediaItem: Media, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
-        if (isPrepared && mediaItem.id == curlPlayingMedia.value?.getString(METADATA_KEY_MEDIA_ID)) {
+        if (isPrepared && mediaItem.id == curPlayingMedia.value?.getString(METADATA_KEY_MEDIA_ID)) {
             playbackState.value?.let { playbackState ->
                 when {
                     playbackState.isPlaying -> if (toggle) audioServiceConnection.transportControls.pause()
@@ -70,6 +70,11 @@ class MainViewModel @Inject constructor(
         } else {
             audioServiceConnection.transportControls.playFromMediaId(mediaItem.id, null)
         }
+    }
+
+    fun prepareFromMedia(mediaItem: Media) {
+        audioServiceConnection.transportControls.prepareFromMediaId(mediaItem.id, null)
+        audioServiceConnection.transportControls.pause()
     }
 
     override fun onCleared() {
