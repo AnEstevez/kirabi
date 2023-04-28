@@ -12,7 +12,7 @@ import com.andresestevez.kirabi.data.Status
 import com.andresestevez.kirabi.data.models.Media
 import com.andresestevez.kirabi.databinding.ActivityMainBinding
 import com.andresestevez.kirabi.exoplayer.isPlaying
-import com.andresestevez.kirabi.exoplayer.toMedia
+import com.andresestevez.kirabi.exoplayer.extensions.toMedia
 import com.andresestevez.kirabi.presentation.adapters.SwipeMediaAdapter
 import com.andresestevez.kirabi.presentation.fragments.MediaFragmentDirections
 import com.andresestevez.kirabi.presentation.viewmodels.MainViewModel
@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         vm.playbackState.observe(this) {
             playbackState = it
             binding.ivPlayPause.setImageResource(
-                if (playbackState?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play
+                if (playbackState?.isPlaying == true) R.drawable.round_pause_24 else R.drawable.round_play_arrow_24
             )
         }
 

@@ -5,13 +5,16 @@ import android.os.Bundle
 import android.os.ResultReceiver
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import com.andresestevez.kirabi.exoplayer.FirebaseAudioSource
+import com.andresestevez.kirabi.exoplayer.extensions.id
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 
 class AudioPlaybackPreparer(
     private val firebaseAudioSource: FirebaseAudioSource,
-    private val playerPrepared: (MediaMetadataCompat?) -> Unit,
+    private val playerPrepared: (List<MediaMetadataCompat>, MediaMetadataCompat?, Boolean) -> Unit,
+
 ) : MediaSessionConnector.PlaybackPreparer {
 
     override fun getSupportedPrepareActions(): Long {
@@ -21,11 +24,22 @@ class AudioPlaybackPreparer(
     override fun onPrepareFromMediaId(
         mediaId: String,
         playWhenReady: Boolean,
-        extras: Bundle?,
+        extras: Bundle?
     ) {
         firebaseAudioSource.whenReady {
-            val itemToPlay = firebaseAudioSource.medias.find { mediaId == it.description.mediaId }
-            playerPrepared(itemToPlay)
+            val itemToPlay: MediaMetadataCompat? = firebaseAudioSource.medias.find { item ->
+                item.id == mediaId
+            }
+            if (itemToPlay == null) {
+                Log.w("AudioPlaybackPreparer", "Content not found: MediaID=$mediaId")
+                // TODO: Notify caller of the error.
+            } else {
+                playerPrepared(
+                    firebaseAudioSource.medias,
+                    itemToPlay,
+                    playWhenReady
+                )
+            }
         }
     }
 

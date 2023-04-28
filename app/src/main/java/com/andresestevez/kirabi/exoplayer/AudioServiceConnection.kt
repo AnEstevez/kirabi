@@ -22,13 +22,15 @@ class AudioServiceConnection(
     private val _networkError = MutableLiveData<Event<Resource<Boolean>>>()
     val networkError: LiveData<Event<Resource<Boolean>>> = _networkError
 
-    private val _playbackState = MutableLiveData<PlaybackStateCompat?>()
-    val playbackState: LiveData<PlaybackStateCompat?> = _playbackState
+    private val _playbackState = MutableLiveData<PlaybackStateCompat>()
+        .apply { postValue(EMPTY_PLAYBACK_STATE) }
+    val playbackState: LiveData<PlaybackStateCompat> = _playbackState
 
-    private val _curPlayingMedia = MutableLiveData<MediaMetadataCompat?>()
-    val curPlayingMedia: LiveData<MediaMetadataCompat?> = _curPlayingMedia
+    private val _curPlayingMedia = MutableLiveData<MediaMetadataCompat>()
+        .apply { postValue(NOTHING_PLAYING) }
+    val curPlayingMedia: LiveData<MediaMetadataCompat> = _curPlayingMedia
 
-    lateinit var mediaController: MediaControllerCompat
+    private lateinit var mediaController: MediaControllerCompat
     val transportControls: MediaControllerCompat.TransportControls
         get() = mediaController.transportControls
 
@@ -56,6 +58,7 @@ class AudioServiceConnection(
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             _playbackState.postValue(state)
+
         }
 
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
@@ -106,3 +109,14 @@ class AudioServiceConnection(
     }
 
 }
+
+@Suppress("PropertyName")
+val EMPTY_PLAYBACK_STATE: PlaybackStateCompat = PlaybackStateCompat.Builder()
+    .setState(PlaybackStateCompat.STATE_NONE, 0, 0f)
+    .build()
+
+@Suppress("PropertyName")
+val NOTHING_PLAYING: MediaMetadataCompat = MediaMetadataCompat.Builder()
+    .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, "")
+   // .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, 0)
+    .build()

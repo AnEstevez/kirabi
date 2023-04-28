@@ -2,4 +2,6 @@
     <string name="app_name">Kirabi</string>
     <string name="audio_notification_channel_name">Audio Channel</string>
     <string name="audio_notification_channel_description">Shows current playing audio</string>
+    <string name="Unexpected_error">Unexpected error</string>
+    <string name="media_not_found">Requested media not found</string>
 </resources>

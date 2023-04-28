@@ -1,30 +1,36 @@
 package com.andresestevez.kirabi.presentation.fragments
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.palette.graphics.Palette
 import com.andresestevez.kirabi.R
-import com.andresestevez.kirabi.data.Status
-import com.andresestevez.kirabi.data.models.Media
+import com.andresestevez.kirabi.data.resolveUriAsBitmap
 import com.andresestevez.kirabi.databinding.FragmentMediaBinding
-import com.andresestevez.kirabi.exoplayer.isPlaying
-import com.andresestevez.kirabi.exoplayer.toMedia
-import com.andresestevez.kirabi.presentation.viewmodels.MainViewModel
+import com.andresestevez.kirabi.exoplayer.extensions.displayIconUri
+import com.andresestevez.kirabi.exoplayer.extensions.subtitle
+import com.andresestevez.kirabi.exoplayer.extensions.title
+import com.andresestevez.kirabi.presentation.extensions.createGradientDrawable
+import com.andresestevez.kirabi.presentation.extensions.startBackgroundDrawableTransition
 import com.andresestevez.kirabi.presentation.viewmodels.MediaViewModel
 import com.bumptech.glide.RequestManager
+import com.google.android.exoplayer2.ExoPlayer
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -33,16 +39,10 @@ class MediaFragment : Fragment() {
     @Inject
     lateinit var glide: RequestManager
 
-    private val mainViewModel: MainViewModel by activityViewModels()
+    @Inject
+    lateinit var exoPlayer: ExoPlayer
+
     private val mediaViewModel: MediaViewModel by viewModels()
-
-    private val navArgs: MediaFragmentArgs by navArgs()
-
-    private var curPlayingMedia: Media? = null
-
-    private var playbackState: PlaybackStateCompat? = null
-
-    private var shouldUpdateSeekbar = true
 
     private var _binding: FragmentMediaBinding? = null
     private val binding: FragmentMediaBinding get() = _binding!!
@@ -58,113 +58,47 @@ class MediaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        subscribeToObservers()
+        binding.playerControls.player = exoPlayer
 
-        with(binding) {
-            ivPlayPauseDetail.setOnClickListener {
-                curPlayingMedia?.let {
-                    mainViewModel.playOrToggleMedia(it, true)
-                }
-            }
-
-            ivSkipPrevious.setOnClickListener {
-                mainViewModel.skipToPreviousMedia()
-            }
-
-            ivSkip.setOnClickListener {
-                mainViewModel.skipToNextMedia()
-            }
-
-            seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean,
-                ) {
-                    if (fromUser) {
-                        setCurPlayerTimeToTextView(progress.toLong())
-                    }
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                    shouldUpdateSeekbar = false
-                }
-
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    seekBar?.let {
-                        mainViewModel.seekTo(it.progress.toLong())
-                        shouldUpdateSeekbar = true
-                    }
-                }
-
-            })
+        mediaViewModel.mediaMetadata.observe(viewLifecycleOwner) {
+            updateUI(it)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.playerControls.player = null
         _binding = null
     }
 
-    private fun updateTitleAndImage(media: Media) {
-        val title = "${media.title} - ${media.artist}"
-        binding.tvMediaName.text = title
-        glide.load(media.imageUrl).into(binding.ivMediaImage)
+    private fun updateUI(it: MediaMetadataCompat) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                val bitmap = it.displayIconUri.resolveUriAsBitmap(glide)
+                setBackgroundDynamicColors(bitmap)
+            }
+        }
+        binding.exoTitle.text = it.title
+        binding.exoSubtitle.text = it.subtitle
+        glide.load(it.displayIconUri).into(binding.exoArtwork)
     }
 
-    private fun subscribeToObservers() {
-        mainViewModel.mediaItems.observe(viewLifecycleOwner) {
-            it?.let { result ->
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        result.data?.let { medias ->
-                            if (curPlayingMedia == null && medias.isNotEmpty()) {
-                                val curMedia = medias.first { media -> media.id == navArgs.mediaId }
-                                curPlayingMedia = curMedia
-                                updateTitleAndImage(curMedia)
-                            }
-                        }
-                    }
-                    else -> Unit
-                }
-            }
-        }
+    private suspend fun setBackgroundDynamicColors(bitmap: Bitmap?) = withContext(Dispatchers.IO) {
+        bitmap?.let {
+            val palette: Palette = Palette.from(bitmap).generate()
 
-        mainViewModel.curPlayingMedia.observe(viewLifecycleOwner) {
-            if (it == null) return@observe
-            curPlayingMedia = it.toMedia().also { media -> updateTitleAndImage(media) }
-        }
+            val vibrantColor = palette.vibrantSwatch?.rgb ?: ContextCompat.getColor(
+                requireContext(),
+                R.color.darkBackground)
 
-        mainViewModel.playbackState.observe(viewLifecycleOwner) {
-            playbackState = it
-            with(binding) {
-                ivPlayPauseDetail.setImageResource(
-                    if (playbackState?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play
-                )
-                seekBar.progress = it?.position?.toInt() ?: 0
-            }
-        }
+            val lightVibrantColor = palette.lightVibrantSwatch?.rgb ?: ContextCompat.getColor(
+                requireContext(),
+                R.color.darkBackground)
 
-        mediaViewModel.curPlayerPosition.observe(viewLifecycleOwner) {
-            if (shouldUpdateSeekbar) {
-                binding.seekBar.progress = it.toInt()
-                setCurPlayerTimeToTextView(it)
-            }
-        }
+            val gradient = binding.root.createGradientDrawable(vibrantColor, lightVibrantColor)
 
-        mediaViewModel.curMediaDuration.observe(viewLifecycleOwner) {
-            with(binding) {
-                seekBar.max = it.toInt()
-                val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-                tvMediaDuration.text = dateFormat.format(it)
-            }
+            binding.root.startBackgroundDrawableTransition(gradient)
         }
     }
-
-    private fun setCurPlayerTimeToTextView(ms: Long) {
-        val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-        binding.tvCurTime.text = dateFormat.format(ms)
-    }
-
 
 }

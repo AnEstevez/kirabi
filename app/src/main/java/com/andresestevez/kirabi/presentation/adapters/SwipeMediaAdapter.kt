@@ -10,6 +10,9 @@ class SwipeMediaAdapter : BaseMediaAdapter(R.layout.swipe_media_item) {
         SwipeMediaItemBinding.bind(holder.itemView).apply {
             tvTitle.text = item.title
             tvArtist.text = item.artist
+            tvTitle.isSelected = true
+            tvArtist.isSelected = true
+
         }
 
         holder.itemView.setOnClickListener {
