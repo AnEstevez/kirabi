@@ -3,10 +3,23 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/exo_styled_controls_pause.xml" value="0.114" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/exo_styled_controls_play.xml" value="0.114" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/exo_styled_controls_previous.xml" value="0.141" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/gradient_black.xml" value="0.162" />
         <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/ic_audiotrack.xml" value="0.171" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/round_fast_forward_24.xml" value="0.1725" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/round_fast_rewind_24.xml" value="0.1725" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/round_pause_24.xml" value="0.114" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/round_play_arrow_24.xml" value="0.114" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/round_skip_next_24.xml" value="0.1725" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/round_skip_previous_24.xml" value="0.182" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/drawable/transition_drawable.xml" value="0.106" />
         <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/layout/activity_main.xml" value="0.178125" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/layout/custom_player.xml" value="0.1" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/layout/custom_player_controls.xml" value="0.25" />
         <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/layout/fragment_home.xml" value="0.25833333333333336" />
-        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/layout/fragment_media.xml" value="0.1" />
+        <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/layout/fragment_media.xml" value="0.2" />
         <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/layout/media_item.xml" value="0.33" />
         <entry key="..\:/dev/proyectosAndroid/A/Kirabi/app/src/main/res/layout/swipe_media_item.xml" value="0.1707193515704154" />
       </map>

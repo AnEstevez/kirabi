@@ -10,6 +10,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.audio.AudioAttributes
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,14 +48,32 @@ class AppModule {
         return Glide.with(context).setDefaultRequestOptions(
             RequestOptions.fitCenterTransform()
                 .placeholder(shimmerDrawable)
-                .error(R.drawable.ic_error)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .error(R.drawable.vinyl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
         )
     }
 
     @Singleton
     @Provides
     fun provideSwipeMediaAdapter() : SwipeMediaAdapter = SwipeMediaAdapter()
+
+    @Singleton
+    @Provides
+    fun provideAudioAttributes() = AudioAttributes.Builder()
+        .setContentType(C.CONTENT_TYPE_MUSIC)
+        .setUsage(C.USAGE_MEDIA)
+        .build()
+
+    @Singleton
+    @Provides
+    fun provideExoPlayer(
+        @ApplicationContext context: Context,
+        audioAttributes: AudioAttributes,
+    ): ExoPlayer =
+        ExoPlayer.Builder(context).build().apply {
+            setAudioAttributes(audioAttributes, true)
+            setHandleAudioBecomingNoisy(true)
+        }
 }
 
 

@@ -45,18 +45,6 @@ class MainViewModel @Inject constructor(
             })
     }
 
-    fun skipToNextMedia() {
-        audioServiceConnection.transportControls.skipToNext()
-    }
-
-    fun skipToPreviousMedia() {
-        audioServiceConnection.transportControls.skipToPrevious()
-    }
-
-    fun seekTo(pos: Long) {
-        audioServiceConnection.transportControls.seekTo(pos)
-    }
-
     fun playOrToggleMedia(mediaItem: Media, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
         if (isPrepared && mediaItem.id == curPlayingMedia.value?.getString(METADATA_KEY_MEDIA_ID)) {

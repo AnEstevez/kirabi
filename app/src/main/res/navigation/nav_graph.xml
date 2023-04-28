@@ -17,6 +17,11 @@
             app:argType="string" />
     </fragment>
 
-    <action android:id="@+id/globalActionToMediaFragment"
-        app:destination="@id/mediaFragment" />
+    <action
+        android:id="@+id/globalActionToMediaFragment"
+        app:destination="@id/mediaFragment"
+        app:enterAnim="@anim/anim_zoom_in"
+        app:exitAnim="@anim/anim_zoom_out"
+        app:popEnterAnim="@anim/anim_zoom_in"
+        app:popExitAnim="@anim/anim_zoom_out" />
 </navigation>
