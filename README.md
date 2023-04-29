@@ -1,11 +1,12 @@
 
 <h1 align="center">Kirabi</h1>
+<p align="center">  
 Playground to test exoplayer2, particularly its StyledPlayerView and PlayerNotificationManager. Also to emulate some features of the Spotify interface.
 Kirabi is an app that plays music stored in Firebase. It is based on the https://github.com/philipplackner/SpotifyCloneYT and https://github.com/android/uamp projects.
-
+</p>
 <br>
 <p align="center">
-<img src="previews/main.png" width="33%"/> <img src="previews/player.png" width="33%"/> <img src="previews/notification.png" width="33%"/> 
+<img src="previews/main.png" width="30%"/> <img src="previews/player.png" width="30%"/> <img src="previews/notification.png" width="30%"/> 
 </p>
 
 ## Tech stack & Open-source libraries
