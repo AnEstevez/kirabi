@@ -28,15 +28,15 @@ Kirabi is an app that plays music stored in Firebase. It is based on the https:/
 ## Preview
 <H4 align="center">Generation of oblique gradient for the background from the prominent colors of the cover</H4>
 <p align="center">
-<img src="previews/preview_2.gif" />
+<img src="previews/previews_2.gif" />
 </p>
 
 <H4 align="center">Media style notification reflecting the player state</H4>
 <p align="center">
-<img src="previews/preview_3.gif" />
+<img src="previews/previews_3.gif" />
 </p>
 
 <H4 align="center">Swipe to change song and auto-scrolling track info</H4>
 <p align="center">
-<img src="previews/preview_1.gif" />
+<img src="previews/previews_1.gif" />
 </p>
